@@ -13,7 +13,7 @@ const exec = require('child_process').exec
 const PromisePool = require('es6-promise-pool')
 const jsb = require('json-beautify')
 
-const soundInputFolder = path.join(__dirname, 'raw-wav')
+const soundInputFolder = path.join(__dirname, 'split-flac')
 const soundFileRegex = /^(\d+)-(\d+)-(\d+)\.flac$/, newSoundRegex = /^sin_\d+_(\d+)\.wav$/
 const soundOutputFolder = path.join(__dirname, 'final/wavs')
 const promptsFile = path.join(__dirname, 'prompts.txt'), prompts = {}
