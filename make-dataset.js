@@ -82,8 +82,8 @@ async function processAudio() {
     
     fs.writeFileSync(path.join(__dirname, 'file-length-ratios.tsv'), 
         Object.entries(fileMapping)
-            .map(([pi, {duration, text}]) => [pi, (duration - 0.5) / text.length]) // remove  the silence added at the end
-            .sort((a, b) => b[1] - a[1])
+            .map(([pi, {duration, text}]) => [pi, duration, text.length, (duration - 0.5) / text.length]) // remove  the silence added at the end
+            //.sort((a, b) => b[3] - a[3]) // can be sorted later in excel
             .map(vals => vals.join('\t'))
             .join('\n'),
         'utf-8')
