@@ -1,6 +1,6 @@
 /**
  * read the original flac files output from audacity macro
- * rename files, remove some silences, convert to wav and save
+ * rename files, remove some silences, convert to wav and save (only if not already present in the output folder)
  * compute statistics and find outliers
  * crean prompts (remove zwj) and make train/val files
  */
@@ -13,11 +13,21 @@ const exec = require('child_process').exec
 const PromisePool = require('es6-promise-pool')
 const jsb = require('json-beautify')
 
+const datasetFilterDuration = 100 // longer recordings than this will be omitted from the dataset
+
 const soundInputFolder = path.join(__dirname, 'split-flac')
 const soundFileRegex = /^(\d+)-(\d+)-(\d+)\.flac$/, newSoundRegex = /^sin_\d+_(\d+)\.wav$/
-const soundOutputFolder = path.join(__dirname, 'final/wavs')
+const soundOutputFolder = path.join(__dirname, 'wavs')
 const promptsFile = path.join(__dirname, 'prompts.txt'), prompts = {}
-fs.readFileSync(promptsFile, 'utf-8').split(/\r?\n+/).map(l => l.split('\t')).forEach(([pi, ptext]) => prompts[Number(pi)] = ptext.replace(/\u200d/g, ''))
+fs.readFileSync(promptsFile, 'utf-8').split(/\r?\n+/).map(l => l.split('\t'))
+    .forEach(([pi, ptext]) => {
+        // TODO breakout this to function that can be used for all tts input text with other normalizations
+        ptext = ptext.replace(/\[\{/g, '(') // only the normal bracket is supported
+        ptext = ptext.replace(/\]\}/g, ')')
+        ptext = ptext.replace(/["“”‘’]/g, "'") // all quotes to single straight quotes
+        ptext = ptext.replace(/\s+/g, ' ') // collapse whitespace
+        prompts[Number(pi)] = ptext.replace(/\u200d/g, '') // remove yansa, rakar, bandi
+    })
 
 const fileGroups = {}, fileMapping = {}
 fs.readdirSync(soundInputFolder).filter(fn => soundFileRegex.test(fn)).forEach(fn => {
@@ -35,13 +45,17 @@ Object.entries(fileGroups).forEach(([start, group]) => {
     Object.entries(group.files).forEach(([fi, oldfn]) => {
         const promptInd = Number(start) + Number(fi) - firstInd
         if (promptInd > group.end || fileMapping[promptInd]) console.error(`prompt ind ${promptInd} already exists or out of range ${group.end}`)
-        fileMapping[promptInd] = { oldfn, newfn: 'sin_01_' + String(promptInd).padStart(5, '0') + '.wav', text: prompts[promptInd] }
+        fileMapping[promptInd] = { 
+            oldfn, 
+            newfn: 'sin_01_' + String(promptInd).padStart(5, '0') + '.wav', 
+            text: prompts[promptInd] 
+        }
     })
 })
 
 console.log(`number of files checked ${Object.keys(fileMapping).length}`)
 
-const soxPath = path.join(__dirname, '../sox-14.4.2/sox.exe')
+const soxPath = 'sox' // path.join(__dirname, '../sox-14.4.2/sox.exe')
 const existingFiles = fs.readdirSync(soundOutputFolder), reprocessAll = false
 const convertCommands = Object.values(fileMapping).filter(({newfn}) => existingFiles.indexOf(newfn) < 0 || reprocessAll)
     .map(({oldfn, newfn}) => {
@@ -80,12 +94,44 @@ async function processAudio() {
     // write complete info about files and legths
     fs.writeFileSync(path.join(__dirname, 'file-mapping.json'), jsb(fileMapping, null, '\t', 100), 'utf-8')
     
-    fs.writeFileSync(path.join(__dirname, 'file-length-ratios.tsv'), 
+    fs.writeFileSync(path.join(__dirname, 'file-length-ratios.tsv'),
+        'index\tduration\ttext_length\tratio\n' +
         Object.entries(fileMapping)
             .map(([pi, {duration, text}]) => [pi, duration, text.length, (duration - 0.5) / text.length]) // remove  the silence added at the end
             //.sort((a, b) => b[3] - a[3]) // can be sorted later in excel
             .map(vals => vals.join('\t'))
             .join('\n'),
         'utf-8')
+
+    const chars = {}
+    Object.values(fileMapping).forEach(({text}) => {
+        text.split('').map(c => chars[c] = chars[c] ? chars[c] + 1 : 1)
+    })
+    console.log(`num chars: ${Object.keys(chars).length}, list of chars: ${Object.keys(chars).sort().join('')}`)
+    fs.writeFileSync(path.join(__dirname, 'characters.tsv'),
+        'char\tcount\n' + Object.entries(chars).map(pair => pair.join('\t')).join('\n'), 'utf-8')
+
+    const filtered = Object.values(fileMapping).filter(({duration}) => duration < datasetFilterDuration)
+    fs.writeFileSync(path.join(__dirname, 'metadata.csv'),
+        filtered.map(({text, newfn}) => ([newfn.split('.')[0], '', text]).join('|')).join('\n'),
+        'utf-8'
+    )
+    const stats = {count: 0, duration: 0, characters: 0, min: 100, max: 0}
+    filtered.forEach(({text, duration}) => {
+        stats.count++
+        stats.duration += duration
+        stats.characters += text.length
+        stats.max = Math.max(duration, stats.max)
+        stats.min = Math.min(duration, stats.min)
+    })
+    console.log(stats)
 }
-processAudio()
+
+async function wrapper(){
+    try {
+        await processAudio()
+    } catch(e) {
+        console.log(e)
+    }    
+}
+wrapper()
