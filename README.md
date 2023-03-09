@@ -12,12 +12,17 @@ Currently there is a lack of publically availble tts datasets for sinhala langua
 ## Stats
 - Number of Recordings: 3300
 - Total Length: 7 hours 41 minutes
-- Total number of Characters: 293,104
+- Total number of Characters: 293,104 sinhala or 339,992 roman
 - Maximum Length: 35 seconds
 - Minumum Length: 2 seconds
+- Number of Unique Characters: 85 sinhala or 53 roman
+- List of Roman Characters: ` !'(),-.:;?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ`
 
 ## metadata.csv
 - contains a subset of the recordings which are less than 16 seconds long in the `ljspeech` format
+
+## filtered dataset less than 16 seconds
+- For some deep learning TTS models longer recordings can cause problems. If you remove the longest 100 or so recordings from the dataset the longest length would be just 16 seconds.
 - Number of Recordings: 3198
 - Total Length: 7 hours 9 minutes
 - Total number of Characters: 273,693

@@ -12,6 +12,7 @@ const path = require('path')
 const exec = require('child_process').exec
 const PromisePool = require('es6-promise-pool')
 const jsb = require('json-beautify')
+const {sinhalaToRomanConvert} = require('./roman_char_mapping')
 
 const datasetFilterDuration = 100 // longer recordings than this will be omitted from the dataset
 
@@ -26,7 +27,9 @@ fs.readFileSync(promptsFile, 'utf-8').split(/\r?\n+/).map(l => l.split('\t'))
         ptext = ptext.replace(/\]\}/g, ')')
         ptext = ptext.replace(/["“”‘’]/g, "'") // all quotes to single straight quotes
         ptext = ptext.replace(/\s+/g, ' ') // collapse whitespace
-        prompts[Number(pi)] = ptext.replace(/\u200d/g, '') // remove yansa, rakar, bandi
+        const sinhala = ptext.replace(/\u200d/g, '') // remove yansa, rakar, bandi
+        const roman = sinhalaToRomanConvert(sinhala)
+        prompts[Number(pi)] = {sinhala, roman}
     })
 
 const fileGroups = {}, fileMapping = {}
@@ -45,10 +48,11 @@ Object.entries(fileGroups).forEach(([start, group]) => {
     Object.entries(group.files).forEach(([fi, oldfn]) => {
         const promptInd = Number(start) + Number(fi) - firstInd
         if (promptInd > group.end || fileMapping[promptInd]) console.error(`prompt ind ${promptInd} already exists or out of range ${group.end}`)
+        const {sinhala, roman} = prompts[promptInd]
         fileMapping[promptInd] = { 
             oldfn, 
             newfn: 'sin_01_' + String(promptInd).padStart(5, '0') + '.wav', 
-            text: prompts[promptInd] 
+            sinhala, roman,
         }
     })
 })
@@ -97,14 +101,14 @@ async function processAudio() {
     fs.writeFileSync(path.join(__dirname, 'file-length-ratios.tsv'),
         'index\tduration\ttext_length\tratio\n' +
         Object.entries(fileMapping)
-            .map(([pi, {duration, text}]) => [pi, duration, text.length, (duration - 0.5) / text.length]) // remove  the silence added at the end
+            .map(([pi, {duration, roman:text}]) => [pi, duration, text.length, (duration - 0.5) / text.length]) // remove  the silence added at the end
             //.sort((a, b) => b[3] - a[3]) // can be sorted later in excel
             .map(vals => vals.join('\t'))
             .join('\n'),
         'utf-8')
 
     const chars = {}
-    Object.values(fileMapping).forEach(({text}) => {
+    Object.values(fileMapping).forEach(({roman:text}) => {
         text.split('').map(c => chars[c] = chars[c] ? chars[c] + 1 : 1)
     })
     console.log(`num chars: ${Object.keys(chars).length}, list of chars: ${Object.keys(chars).sort().join('')}`)
@@ -113,11 +117,11 @@ async function processAudio() {
 
     const filtered = Object.values(fileMapping).filter(({duration}) => duration < datasetFilterDuration)
     fs.writeFileSync(path.join(__dirname, 'metadata.csv'),
-        filtered.map(({text, newfn}) => ([newfn.split('.')[0], '', text]).join('|')).join('\n'),
+        filtered.map(({newfn, sinhala, roman}) => ([newfn.split('.')[0], sinhala, roman]).join('|')).join('\n'),
         'utf-8'
     )
     const stats = {count: 0, duration: 0, characters: 0, min: 100, max: 0}
-    filtered.forEach(({text, duration}) => {
+    filtered.forEach(({roman:text, duration}) => {
         stats.count++
         stats.duration += duration
         stats.characters += text.length
