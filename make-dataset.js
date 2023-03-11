@@ -17,9 +17,10 @@ const {sinhalaToRomanConvert} = require('./roman_char_mapping')
 const datasetFilterDuration = 100 // longer recordings than this will be omitted from the dataset
 
 const soundInputFolder = path.join(__dirname, 'split-flac')
-const soundFileRegex = /^(\d+)-(\d+)-(\d+)\.flac$/, newSoundRegex = /^sin_\d+_(\d+)\.wav$/
 const soundOutputFolder = path.join(__dirname, 'wavs')
+const soundFileRegex = /^(\d+)-(\d+)-(\d+)\.flac$/, newSoundRegex = /^sin_\d+_(\d+)\.wav$/
 const promptsFile = path.join(__dirname, 'prompts.txt'), prompts = {}
+
 fs.readFileSync(promptsFile, 'utf-8').split(/\r?\n+/).map(l => l.split('\t'))
     .forEach(([pi, ptext]) => {
         // TODO breakout this to function that can be used for all tts input text with other normalizations
@@ -64,7 +65,8 @@ const existingFiles = fs.readdirSync(soundOutputFolder), reprocessAll = false
 const convertCommands = Object.values(fileMapping).filter(({newfn}) => existingFiles.indexOf(newfn) < 0 || reprocessAll)
     .map(({oldfn, newfn}) => {
         const inputFile = path.join(soundInputFolder, oldfn), outputFile = path.join(soundOutputFolder, newfn)
-        return `"${soxPath}" "${inputFile}" --rate 22050 "${outputFile}" silence -l 1 0.1 1% -1 1.0 1%`
+        // remove silence from the beginning, clip silences longer than 1 second in the middle, remove silence from the end (reverse needed)
+        return `"${soxPath}" "${inputFile}" --rate 22050 "${outputFile}" silence -l 1 0.1 1% -1 0.75 1% reverse silence 1 0.1 1% reverse`
     })
 
 const makeExecTasks = function * (cmdAr) {
