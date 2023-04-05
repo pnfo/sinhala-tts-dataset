@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@pnfo/singlish-search": "^1.2.0",
+    "es6-promise-pool": "^2.5.0",
+    "json-beautify": "^1.1.1"
+  },
+  "type": "module"
+}

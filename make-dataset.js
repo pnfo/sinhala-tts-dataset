@@ -6,13 +6,16 @@
  */
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 //const sox = require('./../sox-runner')
-const exec = require('child_process').exec
-const PromisePool = require('es6-promise-pool')
-const jsb = require('json-beautify')
-const {sinhalaToRomanConvert} = require('./roman_char_mapping')
+import {exec} from 'child_process'
+import PromisePool from 'es6-promise-pool'
+import jsb from 'json-beautify'
+import {sinhalaToRomanConvert} from '@pnfo/singlish-search/roman_convert.js'
+
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const datasetFilterDuration = 100 // longer recordings than this will be omitted from the dataset
 
