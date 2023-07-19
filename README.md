@@ -19,6 +19,12 @@ Currently there is a lack of publically availble tts datasets for sinhala langua
 - List of Roman Characters: ` !'(),-.:;?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ`
 - Silences have been removed from both the beginning and the end of the recordings
 - Silences in the middle of the recording clipped to 0.75 seconds
+```Total labels => count: 6449, length: 13.9 hours, average length: 7.78
+Outliers labels => count: 6399, length: 13.8 hours, average length: 7.78
+Used labels => count: 6248, length: 13.7 hours, average length: 7.89
+characters=" !'(),-.:;=?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ"
+characters=" !'(),-.:;=?[]ංඃඅආඇඈඉඊඋඌඍඑඒඓඔඕඖකඛගඝඞඟචඡජඣඤඥටඨඩඪණඬතථදධනඳපඵබභමඹයරලවශෂසහළෆ්ාැෑිීුූෘෙේෛොෝෞෲ‍‘’“”"
+```
 
 ## metadata.csv
 - contains a subset of the recordings which are less than 16 seconds long in the `ljspeech` format

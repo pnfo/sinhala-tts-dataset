@@ -3,3 +3,4 @@ orig
 node_modules
 .DS_Store
 originals/*.flac
+/wavs
