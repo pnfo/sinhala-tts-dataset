@@ -10,8 +10,8 @@ import {sinhalaToRomanConvert} from '@pnfo/singlish-search/roman_convert.js'
 export function normalizeText(sinhala) {
     sinhala = sinhala.replace(/\n/g, '...') // newlines cause issues in displaying text
     let text = sinhala.replace(/\*\*|__|\{\S+?\}/g, '') // remove bold, underline and footnotes
-    text = text.replace(/ ?-පෙ-/g, '...') // -pe- is not pronounced
     text = text.replace(/^-පෙ-/g, '') // beginning with -pe- removed
+    text = text.replace(/ ?-පෙ-/g, '...') // -pe- is not pronounced
     text = text.replace(/[-–—]+/g, '-')
     text = text.replace(/[\[\{\(]\s?/g, '(') // only the normal bracket is supported
     text = text.replace(/\s?[\]\}\)]/g, ')')
@@ -24,7 +24,7 @@ export function normalizeText(sinhala) {
 }
 
 const audioInputFolder = 'originals', promptsInputFolder = 'prompts'
-const minClipLength = 2, maxClipLength = 15
+const minClipLength = 1, maxClipLength = 15.5 // incase trimmed by the sox command
 
 function loadLabelFile(file) {
     return fs.readFileSync(path.join(audioInputFolder, file + '.txt'), 'utf-8').split('\n')
@@ -78,7 +78,7 @@ const usedEntries = outlierRemoved.filter(({length}) => length <= maxClipLength 
 
 // extract content from audio files
 // trim all silences more than 0.75 seconds, normalize and set rate (original flac is 44100)
-// silence -l 1 0.1 1% -1 0.75 1% reverse silence 1 0.1 1% reverse
+// silence -l 1 0.1 0.2% -1 0.75 0.2% reverse silence 1 0.1 0.2% reverse
 const extractAudio = true
 if (extractAudio) {
     const outputFolder = 'wavs', outputOptions = 'rate 22050 norm -1' //rate 22050 before norm
@@ -120,4 +120,4 @@ log('Outliers', outlierRemoved.length, totalDuration(outlierRemoved))
 log('Used', usedEntries.length, totalDuration(usedEntries))
 console.log(`characters="${Object.keys(charCountsRoman).sort().join('')}"`)
 console.log(`characters="${Object.keys(charCountsSinhala).sort().join('')}"`)
-console.log(`create dataset using "tar -cjf sinh_dataset.tar.bz2 wavs metadata.csv"`)
+console.log(`create dataset using "tar -cjf sinhala_dataset.tar.bz2 wavs metadata.csv"`)

@@ -1,39 +1,47 @@
 # Path Nirvana Sinhala TTS Dataset
  
-High Quality Sinhala dataset for Text to speech algorithm training - specially designed for deep learning algorithms
+High Quality Multi Speaker Sinhala dataset for Text to speech algorithm training - specially designed for deep learning algorithms
 
-Currently there is a lack of publically availble tts datasets for sinhala language of enough length for Sinhala language. This dataset which has 3300 sentences with 7.5 hours of recordings will help mitigate some of these problems. These single voice recodings were done during the first quarter of 2021. Some effort has been taken to capture most of the rarely used syllables in the Sinhala language, specially those with Sanskrit and Pali origins. There could be some errors (recording not matching with prompt). Though should be rare, if you find some do feel free to contribute to this repository.
+Currently there is a lack of publically availble tts datasets for sinhala language of enough length for Sinhala language. This dataset which has 6248 sentences with 13.7 hours of recordings will help mitigate some of these problems. These multi speaker voice recodings were done during the second quarter of 2023. Some effort has been taken to capture most of the rarely used syllables in the Sinhala language, specially those with Sanskrit and Pali origins. There could be some errors (recording not matching with prompt). Though should be rare, if you find some do feel free to contribute to this repository.
+
+### There are two speakers
+- Male voice Ven. Mettananda - around 5200 voice clips
+- Female voice Mrs. Oshadi - around 1000 voice clips
 
 ## How to use
-- `split-flac` folder contains the original recordings in lossless flac compression format
-- `wav` folder contains the the same files in wav format which is the format most fequently used in machine learning algorithms. Sample Rate 22050Hz and 16-bit PCM encoded similar to the `ljspeech` dataset
-- `file-mappings.json` file contains the prompts, file names and the lengths of the recording for all 3300 recordings
+- You can download the compressed tar file from the Releases which contains the `wavs` folder with all the audio clips
 
 ## Stats
-- Number of Recordings: 3300
-- Total Length: 7 hours 5 minutes
-- Total number of Characters: 293,104 sinhala or 339,992 roman
-- Maximum Length: 33.4 seconds
-- Minumum Length: 1 seconds
-- Number of Unique Characters: 85 sinhala or 53 roman
-- List of Roman Characters: ` !'(),-.:;?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ`
+- Number of Recordings: 6248
+- Total Length: 13.7 hours
+- Maximum Length: 15 seconds
+- Minumum Length: 2 seconds
+- Number of Unique Characters: 54 roman
+- List of Roman Characters: ` !'(),-.:;=?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ`
 - Silences have been removed from both the beginning and the end of the recordings
-- Silences in the middle of the recording clipped to 0.75 seconds
-```Total labels => count: 6449, length: 13.9 hours, average length: 7.78
+- Sample Rate 22050Hz and 16-bit PCM encoded similar to the `ljspeech` dataset
+
+
+```
+v2.0
+Total labels => count: 6449, length: 13.9 hours, average length: 7.78
 Outliers labels => count: 6399, length: 13.8 hours, average length: 7.78
 Used labels => count: 6248, length: 13.7 hours, average length: 7.89
+characters=" !'(),-.:;=?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ"
+characters=" !'(),-.:;=?[]ංඃඅආඇඈඉඊඋඌඍඑඒඓඔඕඖකඛගඝඞඟචඡජඣඤඥටඨඩඪණඬතථදධනඳපඵබභමඹයරලවශෂසහළෆ්ාැෑිීුූෘෙේෛොෝෞෲ‍‘’“”"
+
+v2.1
+Total labels => count: 6449, length: 13.9 hours, average length: 7.78
+Outliers labels => count: 6399, length: 13.8 hours, average length: 7.78
+Used labels => count: 6386, length: 13.8 hours, average length: 7.77
 characters=" !'(),-.:;=?abcdefghijklmnoprstuvyæñāēīōśşūǣḍḥḷṁṅṇṉṛṝṭ"
 characters=" !'(),-.:;=?[]ංඃඅආඇඈඉඊඋඌඍඑඒඓඔඕඖකඛගඝඞඟචඡජඣඤඥටඨඩඪණඬතථදධනඳපඵබභමඹයරලවශෂසහළෆ්ාැෑිීුූෘෙේෛොෝෞෲ‍‘’“”"
 ```
 
 ## metadata.csv
-- contains a subset of the recordings which are less than 16 seconds long in the `ljspeech` format
+- contains a subset of the recordings which are less than 15 seconds long in the `ljspeech` format
 
-## filtered dataset less than 16 seconds
-- For some deep learning TTS models longer recordings can cause problems. If you remove the longest 100 or so recordings from the dataset the longest length would be just 16 seconds.
-- Number of Recordings: 3225
-- Total Length: 6 hours 41 minutes
-- Total number of Characters: 322,756 roman
+The first version of this dataset contained around 7 hours of speech from a single speaker. It has since been moved to the `old dataset` folder
 
 See LICENSE.txt file for license information. GPL
 
