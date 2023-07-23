@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sinhala Text to Speech</title>
     <style>
-      /* adjust layout for small screens */
-      @media screen and (max-width: 600px) {
-        main {
-          display: flex;
-          flex-direction: column;
-        }
-        .audio-group {
-          margin-bottom: 1rem;
-        }
-      }
       @font-face {
         font-family: 'UN-Abhaya';
         src: url('UN-Abhaya.ttf') format('truetype');
       }
       p.sinh {
         font-family: 'UN-Abhaya', sans-serif;
+        font-size: 1.1em;
       }
     </style>
   </head>
@@ -28,7 +20,7 @@
     </header>
     <main>
       <div>
-        <p>Following results were obtained by training [a VITS model](https://github.com/pathnirvana/coqui-tts) on 11.5 hours of data in Sinhala dataset v2.0 <a href="https://github.com/pnfo/sinhala-tts-dataset/releases">here</a> for about 800 epochs on a RTX 3090 GPU. 
+        <p>Following results were obtained by training <a href="https://github.com/pathnirvana/coqui-tts">a VITS model</a> on 11.5 hours of data in Sinhala dataset v2.0 <a href="https://github.com/pnfo/sinhala-tts-dataset/releases">here</a> for about 800 epochs on a RTX 3090 GPU. 
             The training took about 24 hours.</p>
         <p>The trained model is included in the releases section of this repository <a href="https://github.com/pathnirvana/coqui-tts/releases">here</a></p>
         <p>Example texts for the following voice synthesis come from the <a href="https://tipitaka.lk/">Buddha Jayanthi Tipiṭaka</a> and <a href="https://pitaka.lk/books/app-index.html">Buddhist Books App</a></p>
@@ -37,7 +29,7 @@
       <div class="audio-group">
         <h2>Buddhist Text</h2>
         <p class="sinh">බුද්ධශ්‍රේෂ්ඨ තෙම අත්‍යන්තපරිශුද්ධ වූ යම් මාර්‍ගසමාධියක් වර්‍ණනා කළේ ද, බුද්ධාදීහු ආනන්තරික (අනතුරුව ම පල දෙන) සමාධිය යැ යී යමකට කියත් ද, ඒ සමාධිය හා සදෘශ (අන් සමාධි) යෙක් නැත. මේ කරුණින් ද ආර්‍ය්‍යමාර්‍ගධර්‍මය උතුම් රුවනෙකි. මේ සත්‍යබලයෙන් සෙත් වේවා.</p>
-        <audio controls>
+        <audio controls height="30">
           <source src="samples/para-1.wav" type="audio/wav">
         </audio>
         <p class="sinh">අර්‍ත්‍ථ - ධර්‍ම - නිරුක්ති - ප්‍රතිභානප්‍රඥාසඞ්ඛ්‍යාත පටිසම්භිදාවන් ද, අෂ්ටවිධවිමෝක්‍ෂයන් ද, බුද්ධශ්‍රාවකයන් විසින් ලැබිය යුතු වූ ශ්‍රාවකසම්පත්තිය සිද්ධ කර්‍ණ යම් ශ්‍රාවකපාරමිතාවක් ඇත් නම් එය ද, ස්වයම්භූභාවය සිද්ධ කරණ යම් ප්‍රත්‍යෙකබෝධියක් (පසේ බුදුබවක්) ඇත් නම් එය ද, සියලු සත්ත්‍වයන්ට උතුම් බව සිද්ධ කරණ අනුත්තර බුද්ධභූමියක් (ලොව්තුරා බුදු බවක්) ඇත් නම් එය ද යන සියල්ල මේ පුණ්‍යනිධානය කරණ කොට ගෙණ ලැබේ.</p>
