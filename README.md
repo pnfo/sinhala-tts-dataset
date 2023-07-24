@@ -1,4 +1,6 @@
 # Path Nirvana Sinhala TTS Dataset
+
+![Cover Photo](https://pnfo.github.io/sinhala-tts-dataset/cover-photo.jpg)
  
 High Quality Multi Speaker Sinhala dataset for Text to speech algorithm training - specially designed for deep learning algorithms
 
