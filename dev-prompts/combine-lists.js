@@ -4,7 +4,7 @@ import fs from 'fs'
 import {loadPrompts} from '../common_functions.js'
 import lodash from 'lodash'
 
-const rootFolder = 'sinhala-prompts', 
+const rootFolder = 'dev-prompts', 
     textLengthToTimeRatio = 0.1035, // median from 11 test recordings from Ven mettananada 
     maxPromptLength = 13 / textLengthToTimeRatio
 

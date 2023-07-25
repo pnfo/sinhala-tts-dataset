@@ -80,8 +80,8 @@ const minSplitPromptLength = 10, maxTimeNeeded = 3600 * 20,
 console.log(`max prompt length ${maxPromptLength}, dataset name ${datasetName}`)
 const selected = {}, selectedFiles = {}, selectedTypes = {}
 let countSelected = 0, timeSelected = 0, filesUsed = 0, promptsConsidered = 0, entriesConsidered = 0
-const allSyls = JSON.parse(fs.readFileSync(`sinhala-prompts/all-syls.json`, 'utf-8'))
-const syls = JSON.parse(fs.readFileSync(`sinhala-prompts/syls-syl-1.json`, 'utf-8'))  //{select: {}, need: {}} //
+const allSyls = JSON.parse(fs.readFileSync(`dev-prompts/all-syls.json`, 'utf-8'))
+const syls = JSON.parse(fs.readFileSync(`dev-prompts/syls-syl-1.json`, 'utf-8'))  //{select: {}, need: {}} //
 
 const files = fs.readdirSync(textInputFolder).filter(f => f.endsWith('json') && !f.startsWith('atta') && !f.startsWith('anya'))
 lodash.shuffle(files).forEach(file => {
@@ -94,12 +94,12 @@ lodash.shuffle(files).forEach(file => {
 })
 
 syls.need = Object.fromEntries(Object.entries(allSyls).filter(([s, c]) => !syls.select[s] && c >= 2))
-fs.writeFileSync(`sinhala-prompts/syls-${datasetName}.json`, jsb(syls, null, '\t', 100), 'utf-8')
-fs.writeFileSync(`sinhala-prompts/prompts-${datasetName}.txt`, Object.entries(selected)
+fs.writeFileSync(`dev-prompts/syls-${datasetName}.json`, jsb(syls, null, '\t', 100), 'utf-8')
+fs.writeFileSync(`dev-prompts/prompts-${datasetName}.txt`, Object.entries(selected)
     .sort((a, b) => a[1].type.localeCompare(b[1].type))
     .map(([text, {type, file, length}], i) => `${i + 1}\t${type}\t${file.slice(0, -5)}\t${length}\n${text.replace(/ x /g, '\n')}`).join('\n\n'), 'utf-8')
 
-// fs.writeFileSync(`sinhala-prompts/prompts-common.txt`, Object.entries(allPrompts)
+// fs.writeFileSync(`dev-prompts/prompts-common.txt`, Object.entries(allPrompts)
 //     .sort((a, b) => sortLength(b) - sortLength(a)).slice(0, 1000).sort((a, b) => a[0].localeCompare(b[0]))
 //     .map(([text, count], i) => [i, count, sortLength([text, count]), text].join('\t')).join('\n'), 'utf-8')
 
