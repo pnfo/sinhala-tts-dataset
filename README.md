@@ -49,7 +49,7 @@ characters=" !'(),-.:;=?[]ංඃඅආඇඈඉඊඋඌඍඑඒඓඔඕඖක
 
 The first version of this dataset contained around 7 hours of speech from a single speaker. It has since been moved to the `old dataset` folder
 
-See LICENSE.txt file for license information. GPL
+See LICENSE.txt file for license information. GPL. The voices belong to a respected buddhist monk and and a lady who donated their voices. Therefore permission is only granted for non-obscene, non-offensive speech generation.
 
 If you have any questions or want to share your TTS training results contact me.
 
